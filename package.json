@@ -3,7 +3,7 @@
   "private": true,
   "version": "0.0.0",
   "type": "module",
-  "homepage": "https://github.com/umernk42/WorkOuts_MERN/",
+  "homepage": "https://umernk42.github.io/WorkOuts_MERN/",
   "scripts": {
     "dev": "vite",
     "build": "vite build",
