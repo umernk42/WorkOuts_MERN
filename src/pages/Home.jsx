@@ -10,7 +10,7 @@ function Home() {
 
   useEffect(() => {
     const fetchWorkOuts = async () => {
-      const response = await fetch("http://localhost:4000/api/workouts");
+      const response = await fetch("https://workouts-mern-backend.onrender.com/api/workouts");
       const json = await response.json();
 
       if (response.ok) {

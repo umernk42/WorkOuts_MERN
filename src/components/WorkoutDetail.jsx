@@ -14,7 +14,7 @@ function WorkoutDetail({ workout }) {
 
   const handleClick = async () => {
     const response = await fetch(
-      "http://localhost:4000/api/workouts/" + workout._id,
+      "https://workouts-mern-backend.onrender.com/api/workouts/" + workout._id,
       {
         method: "DELETE",
       }
