@@ -1,28 +1,36 @@
-import React, { useState } from "react";
+import React, { useState,useContext } from "react";
 import { useWorkoutsContext } from "../hooks/useWorkoutsContext";
+import { EditContext } from "../context/EditContext";
 
-function WorkoutForm({baseURL}) {
+function EditForm({setCurrentWorkout,currentWorkout,baseURL}) {
+  const editContext = useContext(EditContext);
   const {dispatch} = useWorkoutsContext(); 
-  const [title, setTitle] = useState("");
-  const [load, setLoad] = useState("");
-  const [reps, setReps] = useState("");
+  const [title, setTitle] = useState(currentWorkout.title);
+  const [load, setLoad] = useState(currentWorkout.load);
+  const [reps, setReps] = useState(currentWorkout.reps);
   const [error, setError] = useState(null);
   const [emptyFields, setEmptyFields] = useState([]);
 
   const handleSubmit = async (event) => {
     event.preventDefault();
 
-    const workout = { title, load, reps };
+    console.log(currentWorkout);
 
-    const response = await fetch(baseURL+"/api/workouts", {
-      method: "POST",
+    const workout = {title, load, reps};
+    
+    const response = await fetch(baseURL+"/api/workouts/"+currentWorkout._id, {
+      method: "PATCH",
       body: JSON.stringify(workout),
       headers: {
         "Content-Type": "application/json",
       },
     });
 
-    const json = await response.json();
+    const updatedWorkout = await fetch(baseURL+"/api/workouts/"+currentWorkout._id, {
+      method: "GET"
+    });
+
+    const json = await updatedWorkout.json();
 
     if (!response.ok) {
       setError(json.error);
@@ -33,19 +41,24 @@ function WorkoutForm({baseURL}) {
       setLoad("");
       setReps("");
       setEmptyFields([]);
+      editContext.setIsOpen(false);
       setError(null);
-      console.log("New Workout Added: ", json);
+      setCurrentWorkout(null);
+      console.log("Changes Saved ", json);
       dispatch({
-        type: 'CREATE_WORKOUT',
+        type: 'EDIT_WORKOUT',
         payload: json
-      })
+      });
 
     }
+    
+
+
   };
 
   return (
-    <form className="create" onSubmit={handleSubmit}>
-      <h3>Add a New Workout</h3>
+    <form className="edit-form" onSubmit={handleSubmit}>
+      <h3>Edit </h3>
 
       <label>Excersize Title: </label>
       <input
@@ -71,10 +84,10 @@ function WorkoutForm({baseURL}) {
         className= {emptyFields.includes('reps') ? 'error': '' }
       />
 
-      <button>Add Workout</button>
+      <button>Save Changes</button>
       {error && <div className="error">{error}</div>}
     </form>
   );
 }
 
-export default WorkoutForm;
+export default EditForm;

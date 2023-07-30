@@ -1,20 +1,29 @@
-import React, { useState } from "react";
+import React, { useState,useContext } from "react";
 import { useWorkoutsContext } from "../hooks/useWorkoutsContext";
 import formatDistanceToNow from "date-fns/formatDistanceToNow";
+import {AiFillDelete,AiFillEdit} from "react-icons/ai";
+import { EditContext } from "../context/EditContext";
+import { DeleteContext } from "../context/DeleteContext";
 
-
-function WorkoutDetail({ workout }) {
+function WorkoutDetail({ workout, baseURL,setCurrentWorkout }) {
   const { dispatch } = useWorkoutsContext();
-
-  const [editing, setEditing] = useState(false);
+  const editContext = useContext(EditContext);
+  const deleteContext = useContext(DeleteContext);
 
   const handleEdit = () => {
-    setEditing((prev) => !prev);
+    editContext.setIsOpen(true);
+    setCurrentWorkout(workout);
   };
 
-  const handleClick = async () => {
+  const askDlt = () => {
+    deleteContext.setIsOpen(true);
+    setCurrentWorkout(workout);
+  }
+
+
+/*   const handleDlt = async () => {
     const response = await fetch(
-      "https://workouts-mern-backend.onrender.com/api/workouts/" + workout._id,
+      baseURL+"/api/workouts/" + workout._id,
       {
         method: "DELETE",
       }
@@ -25,7 +34,7 @@ function WorkoutDetail({ workout }) {
     if (response.ok) {
       dispatch({ type: "DELETE_WORKOUT", payload: json });
     }
-  };
+  }; */
 
   return (
     <>
@@ -40,12 +49,12 @@ function WorkoutDetail({ workout }) {
           {workout.reps}
         </p>
         <p>
-          {formatDistanceToNow(new Date(workout.createdAt), {
+          {formatDistanceToNow(new Date(workout.updatedAt), {
             addSuffix: true,
           })}
         </p>
-        <span className='delelteBtn' onClick={handleClick}>Delete</span>
-    
+        <span className='editBtn' onClick={handleEdit}><AiFillEdit /></span>
+        <span className='delelteBtn' onClick={askDlt}><AiFillDelete /></span>
       </div>
 
 
