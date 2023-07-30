@@ -6,6 +6,7 @@ import { EditContext } from "../context/EditContext";
 import EditForm from "../components/EditForm";
 import { DeleteContext } from "../context/DeleteContext";
 import DeleteModal from "../components/DeleteModal";
+import Loading from "../components/Loading";
 
 function Home({ baseURL }) {
   const { workouts, dispatch } = useWorkoutsContext();
@@ -13,6 +14,9 @@ function Home({ baseURL }) {
   //  const [workouts, setWorkouts] = useState(null);
   const [currentWorkout, setCurrentWorkout] = useState(null);
   const deleteContext = useContext(DeleteContext);
+  const [isLoading, setIsLoading] = useState(true);
+  const [isDel, setIsDel] = useState(false);
+  const [isEditing, setIsEditing] = useState(false);
 
   useEffect(() => {
     const fetchWorkOuts = async () => {
@@ -26,6 +30,7 @@ function Home({ baseURL }) {
           payload: json,
         });
       }
+      setIsLoading(false);
     };
 
     fetchWorkOuts();
@@ -39,6 +44,10 @@ function Home({ baseURL }) {
   const closeDelModal = () => {
     deleteContext.setIsOpen(false);
   };
+
+  if (isLoading) {
+    return <Loading loadingText="Loading..." />;
+  }
 
   return (
     <div className="home">
@@ -62,11 +71,16 @@ function Home({ baseURL }) {
             &times;
           </span>
           <div className="modal-content">
-            <EditForm
-              setCurrentWorkout={setCurrentWorkout}
-              currentWorkout={currentWorkout}
-              baseURL={baseURL}
-            />
+            {isEditing ? (
+              <Loading loadingText="Saving Changes..." />
+            ) : (
+              <EditForm
+                setCurrentWorkout={setCurrentWorkout}
+                currentWorkout={currentWorkout}
+                baseURL={baseURL}
+                setIsEditing={setIsEditing}
+              />
+            )}
           </div>
         </div>
       ) : null}
@@ -77,11 +91,16 @@ function Home({ baseURL }) {
             &times;
           </span>
           <div className="modal-content">
-            <DeleteModal
-              setCurrentWorkout={setCurrentWorkout}
-              currentWorkout={currentWorkout}
-              baseURL={baseURL}
-            />
+            {isDel ? (
+              <Loading loadingText="Deleting..." />
+            ) : (
+              <DeleteModal
+                setCurrentWorkout={setCurrentWorkout}
+                currentWorkout={currentWorkout}
+                baseURL={baseURL}
+                setIsDel={setIsDel}
+              />
+            )}
           </div>
         </div>
       ) : null}

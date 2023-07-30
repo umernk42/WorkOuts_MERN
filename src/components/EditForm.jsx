@@ -2,19 +2,21 @@ import React, { useState,useContext } from "react";
 import { useWorkoutsContext } from "../hooks/useWorkoutsContext";
 import { EditContext } from "../context/EditContext";
 
-function EditForm({setCurrentWorkout,currentWorkout,baseURL}) {
+function EditForm({setCurrentWorkout,currentWorkout,baseURL,setIsEditing}) {
   const editContext = useContext(EditContext);
   const {dispatch} = useWorkoutsContext(); 
-  const [title, setTitle] = useState(currentWorkout.title);
-  const [load, setLoad] = useState(currentWorkout.load);
-  const [reps, setReps] = useState(currentWorkout.reps);
+  const currentTitle = currentWorkout.title;
+  const currentLoad = currentWorkout.load;
+  const currentReps = currentWorkout.reps;
+
+  const [title, setTitle] = useState(currentTitle);
+  const [load, setLoad] = useState(currentLoad);
+  const [reps, setReps] = useState(currentReps);
   const [error, setError] = useState(null);
   const [emptyFields, setEmptyFields] = useState([]);
 
   const handleSubmit = async (event) => {
     event.preventDefault();
-
-    console.log(currentWorkout);
 
     const workout = {title, load, reps};
     
@@ -26,17 +28,25 @@ function EditForm({setCurrentWorkout,currentWorkout,baseURL}) {
       },
     });
 
-    const updatedWorkout = await fetch(baseURL+"/api/workouts/"+currentWorkout._id, {
-      method: "GET"
-    });
-
-    const json = await updatedWorkout.json();
+    const json = await response.json();
 
     if (!response.ok) {
       setError(json.error);
       setEmptyFields(json.emptyFields);
+      console.log('Response not OK');
     }
+
+    console.log(error);
+    console.log(emptyFields);
+
     if (response.ok) {
+      setIsEditing(true);
+      const updatedWorkout = await fetch(baseURL+"/api/workouts/"+currentWorkout._id, {
+        method: "GET"
+      });
+
+      const updatedJson = await updatedWorkout.json();
+
       setTitle("");
       setLoad("");
       setReps("");
@@ -44,15 +54,14 @@ function EditForm({setCurrentWorkout,currentWorkout,baseURL}) {
       editContext.setIsOpen(false);
       setError(null);
       setCurrentWorkout(null);
-      console.log("Changes Saved ", json);
+      console.log("Changes Saved ", updatedJson);
       dispatch({
         type: 'EDIT_WORKOUT',
-        payload: json
+        payload: updatedJson
       });
-
+      console.log('Response Ok');
+      setIsEditing(false);
     }
-    
-
 
   };
 

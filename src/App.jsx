@@ -1,4 +1,3 @@
-import { useState } from "react";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import Home from "./pages/Home";
 import NavBar from "./components/NavBar";
@@ -7,6 +6,9 @@ import { DeleteContextProvider } from "./context/DeleteContext";
 
 function App() {
   const baseURL = "https://workouts-mern-backend.onrender.com";
+
+  //const baseURL = "http://localhost:4000";
+
 
   return (
     <>
