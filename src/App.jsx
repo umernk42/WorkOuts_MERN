@@ -4,6 +4,7 @@ import NavBar from "./components/NavBar";
 import { EditContextProvider } from "./context/EditContext";
 import { DeleteContextProvider } from "./context/DeleteContext";
 
+
 function App() {
   const baseURL = "https://workouts-mern-backend.onrender.com";
 
@@ -12,6 +13,7 @@ function App() {
 
   return (
     <>
+    
       <EditContextProvider>
         <DeleteContextProvider>
           <div className="App">
