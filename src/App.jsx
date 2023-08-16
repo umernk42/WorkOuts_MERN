@@ -3,6 +3,8 @@ import Home from "./pages/Home";
 import NavBar from "./components/NavBar";
 import { EditContextProvider } from "./context/EditContext";
 import { DeleteContextProvider } from "./context/DeleteContext";
+import Login from './pages/Login';
+import SignUp from './pages/SignUp';
 
 
 function App() {
@@ -25,6 +27,14 @@ function App() {
                     path="/WorkOuts_MERN/"
                     element={<Home baseURL={baseURL} />}
                   />
+                  <Route
+                    path="/WorkOuts_MERN/login"
+                    element={<Login />}
+                  />
+                  <Route
+                    path="/WorkOuts_MERN/signup"
+                    element={<SignUp />}
+                  />    
                 </Routes>
               </div>
             </BrowserRouter>

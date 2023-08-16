@@ -8,6 +8,12 @@ function NavBar() {
             <Link to='/WorkOuts_MERN/'>
                 <h1>Workout Buddy</h1>
             </Link>
+            <nav>
+              <div>
+                <Link to='/WorkOuts_MERN/login'>Login</Link>
+                <Link to='/WorkOuts_MERN/signup'>Sign Up</Link>
+              </div>
+            </nav>
         </div>
     </header>
   )
