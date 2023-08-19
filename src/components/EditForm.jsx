@@ -1,6 +1,7 @@
 import React, { useState,useContext } from "react";
 import { useWorkoutsContext } from "../hooks/useWorkoutsContext";
 import { EditContext } from "../context/EditContext";
+import { useAuthContext } from "../hooks/useAuthContext";
 
 function EditForm({setCurrentWorkout,currentWorkout,baseURL,setIsEditing}) {
   const editContext = useContext(EditContext);
@@ -8,6 +9,7 @@ function EditForm({setCurrentWorkout,currentWorkout,baseURL,setIsEditing}) {
   const currentTitle = currentWorkout.title;
   const currentLoad = currentWorkout.load;
   const currentReps = currentWorkout.reps;
+  const {user} = useAuthContext();
 
   const [title, setTitle] = useState(currentTitle);
   const [load, setLoad] = useState(currentLoad);
@@ -18,6 +20,11 @@ function EditForm({setCurrentWorkout,currentWorkout,baseURL,setIsEditing}) {
   const handleSubmit = async (event) => {
     event.preventDefault();
 
+    if(!user){
+      setError('You must be logged in');
+      return;
+    }
+
     const workout = {title, load, reps};
     
     const response = await fetch(baseURL+"/api/workouts/"+currentWorkout._id, {
@@ -25,6 +32,7 @@ function EditForm({setCurrentWorkout,currentWorkout,baseURL,setIsEditing}) {
       body: JSON.stringify(workout),
       headers: {
         "Content-Type": "application/json",
+        "Authorization": `Bearer ${user.token}`
       },
     });
 
@@ -36,13 +44,13 @@ function EditForm({setCurrentWorkout,currentWorkout,baseURL,setIsEditing}) {
       console.log('Response not OK');
     }
 
-    console.log(error);
-    console.log(emptyFields);
-
     if (response.ok) {
       setIsEditing(true);
       const updatedWorkout = await fetch(baseURL+"/api/workouts/"+currentWorkout._id, {
-        method: "GET"
+        method: "GET",
+        headers: {
+          "Authorization": `Bearer ${user.token}`
+        },
       });
 
       const updatedJson = await updatedWorkout.json();
@@ -54,12 +62,10 @@ function EditForm({setCurrentWorkout,currentWorkout,baseURL,setIsEditing}) {
       editContext.setIsOpen(false);
       setError(null);
       setCurrentWorkout(null);
-      console.log("Changes Saved ", updatedJson);
       dispatch({
         type: 'EDIT_WORKOUT',
         payload: updatedJson
       });
-      console.log('Response Ok');
       setIsEditing(false);
     }
 

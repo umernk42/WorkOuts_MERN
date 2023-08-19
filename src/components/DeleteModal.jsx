@@ -2,11 +2,12 @@ import React, { useContext, useState } from "react";
 import { DeleteContext } from "../context/DeleteContext";
 import { useWorkoutsContext } from "../hooks/useWorkoutsContext";
 import Loading from "./Loading";
+import { useAuthContext } from "../hooks/useAuthContext";
 
 function DeleteModal({ setCurrentWorkout, currentWorkout, baseURL,setIsDel }) {
   const deleteContext = useContext(DeleteContext);
   const { dispatch } = useWorkoutsContext();
- 
+  const {user} = useAuthContext();
 
   const handleNo = () => {
     deleteContext.setIsOpen(false);
@@ -14,11 +15,19 @@ function DeleteModal({ setCurrentWorkout, currentWorkout, baseURL,setIsDel }) {
 
  
   const handleDlt = async () => {
+
+    if(!user){
+      return;
+    }
+
     setIsDel(true);
     const response = await fetch(
         baseURL + "/api/workouts/" + currentWorkout._id,
         {
           method: "DELETE",
+          headers: {
+            'Authorization': `Bearer ${user.token}`
+          }
         }
       );
   

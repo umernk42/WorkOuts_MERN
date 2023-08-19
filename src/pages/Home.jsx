@@ -7,34 +7,43 @@ import EditForm from "../components/EditForm";
 import { DeleteContext } from "../context/DeleteContext";
 import DeleteModal from "../components/DeleteModal";
 import Loading from "../components/Loading";
+import { useAuthContext } from "../hooks/useAuthContext";
 
 function Home({ baseURL }) {
   const { workouts, dispatch } = useWorkoutsContext();
   const editContext = useContext(EditContext);
-  //  const [workouts, setWorkouts] = useState(null);
   const [currentWorkout, setCurrentWorkout] = useState(null);
   const deleteContext = useContext(DeleteContext);
   const [isLoading, setIsLoading] = useState(true);
   const [isDel, setIsDel] = useState(false);
   const [isEditing, setIsEditing] = useState(false);
+  const {user} = useAuthContext();
 
   useEffect(() => {
     const fetchWorkOuts = async () => {
-      const response = await fetch(baseURL + "/api/workouts");
+      const response = await fetch(baseURL + "/api/workouts",{
+        headers: {
+          'Authorization': `Bearer ${user.token}`
+        }
+      });
       const json = await response.json();
 
       if (response.ok) {
-        //setWorkouts(json);
         dispatch({
           type: "SET_WORKOUTS",
           payload: json,
         });
       }
-      setIsLoading(false);
+      
     };
 
-    fetchWorkOuts();
-  }, []);
+    if(user){
+      fetchWorkOuts();
+      
+    }
+    setIsLoading(false);
+    
+  }, [dispatch,user]);
 
   const onClose = () => {
     editContext.setIsOpen(false);
