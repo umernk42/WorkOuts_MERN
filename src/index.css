@@ -43,6 +43,35 @@ header a {
   grid-template-columns: 3fr 1fr;
   gap: 100px;
 }
+
+/* Loading.css */
+
+.loading {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  background-color: #f0f0f0;
+}
+
+h2 {
+  font-size: 1.5rem;
+  color: #333;
+  text-align: center;
+}
+
+.login-msg{
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.login-msg h2 {
+  font-size: 1.5rem;
+  color: #333;
+  text-align: center;
+}
+
 .workout-details {
   background: var(--white);
   border-radius: 4px;

@@ -9,7 +9,7 @@ import DeleteModal from "../components/DeleteModal";
 import Loading from "../components/Loading";
 import { useAuthContext } from "../hooks/useAuthContext";
 
-function Home({ baseURL }) {
+function Home({ baseURL,setIsLoggingIn }) {
   const { workouts, dispatch } = useWorkoutsContext();
   const editContext = useContext(EditContext);
   const [currentWorkout, setCurrentWorkout] = useState(null);
